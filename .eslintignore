@@ -1,0 +1,8 @@
+.vscode
+.github
+build
+doc
+jsdoc
+test
+dist
+/**/migration
