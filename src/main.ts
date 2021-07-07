@@ -13,10 +13,10 @@ async function bootstrap() {
   const PG_DB = configService.get('PG_DB') as string;
 
   void createAdmin({ PG_DB })
-  .then(() =>
-    console.log(`Admin user exists or has been created: login - admin, password - admin`),
-  )
-  .catch((e) => console.log('Error: ', e));
+    .then(() =>
+      console.log(`Admin user exists or has been created: login - admin, password - admin`),
+    )
+    .catch((e) => console.log('Error: ', e));
 
   await app.listen(PORT, '0.0.0.0');
 

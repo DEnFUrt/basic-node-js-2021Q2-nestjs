@@ -8,7 +8,11 @@ import { getConnection, QueryRunner } from 'typeorm';
 // const { OK } = StatusCodes;
 const TABLE_NAME = 'user'; // user table name
 
-export const createAdmin = async ({ PG_DB, /* LOGIN_ADMIN, PASSWORD_ADMIN */ }: {PG_DB: string;}): Promise<void> => {
+export const createAdmin = async ({
+  PG_DB /* LOGIN_ADMIN, PASSWORD_ADMIN */,
+}: {
+  PG_DB: string;
+}): Promise<void> => {
   try {
     const connection = getConnection();
     const queryRunner: QueryRunner = connection.createQueryRunner();
@@ -30,7 +34,7 @@ export const createAdmin = async ({ PG_DB, /* LOGIN_ADMIN, PASSWORD_ADMIN */ }: 
         );
       }
     }
-/* 
+    /* 
       logger.serverInfo(
         `Migration was perfomed with yhe following parameters: ${JSON.stringify(resultMigration)}`,
       );

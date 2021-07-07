@@ -2,7 +2,6 @@ import { ConfigService } from '@nestjs/config';
 // import path from 'path';
 import { ConnectionOptions } from 'typeorm';
 
-
 const configService = new ConfigService();
 
 // const isCompiled = path.extname(__filename).includes('js');

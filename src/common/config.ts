@@ -6,7 +6,7 @@ export default () => ({
   // application
   PORT: parseInt(process.env['PORT'] as string, 10),
   // logger
-  DIR_LOG:  `${APPROOT}/logs`,
+  DIR_LOG: `${APPROOT}/logs`,
   ERROR_LOG: 'error.log',
   INFO_LOG: 'app.log',
   LOG_REWRITE_EVERY_DAY: true,
@@ -15,10 +15,8 @@ export default () => ({
   AUTH_MODE: process.env['AUTH_MODE'] === 'true',
   NODE_ENV: process.env['NODE_ENV'],
   JWT_SECRET_KEY: process.env['JWT_SECRET_KEY'],
-  SOLT_ROUNDS: !process.env['SOLT_ROUNDS']
-    ? 10
-    : parseInt(process.env['SOLT_ROUNDS'], 10),
-  EXPIRES_IN:  process.env['EXPIRES_IN'] || '10m',
+  SOLT_ROUNDS: !process.env['SOLT_ROUNDS'] ? 10 : parseInt(process.env['SOLT_ROUNDS'], 10),
+  EXPIRES_IN: process.env['EXPIRES_IN'] || '10m',
   // router proxy
   ROUTE_WHITELIST: ['/', '/doc', '/login', '/favicon.ico'],
   // postgresql
