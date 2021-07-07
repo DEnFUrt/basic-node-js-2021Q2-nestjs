@@ -6,3 +6,4 @@ jsdoc
 test
 dist
 /**/migration
+webpack-hmr*

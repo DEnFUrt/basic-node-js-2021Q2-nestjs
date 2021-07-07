@@ -6,7 +6,7 @@ import { AppService } from './app.service';
 import { UsersModule } from './users/users.module';
 
 import config from './common/config';
-import ORMConfig from './common/ormconfig';
+// import { User } from './users/entities/user.entity';
 
 @Module({
   imports: [
@@ -14,7 +14,9 @@ import ORMConfig from './common/ormconfig';
       load: [config],
       isGlobal: true,
     }),
-    TypeOrmModule.forRoot(ORMConfig),
+    TypeOrmModule.forRoot({
+      // entities: [User],
+    }),
     UsersModule,
   ],
   controllers: [AppController],
