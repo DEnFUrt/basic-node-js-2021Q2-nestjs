@@ -12,7 +12,7 @@ export class User {
   @Column('varchar', { length: 50 })
   name = 'USER';
 
-  @Column('varchar', { length: 50, unique: true })
+  @Column('varchar', { length: 50 /* , unique: true */ })
   login = 'user';
   /* 
   @OneToMany(() => Task, (tasks) => tasks.user, {
