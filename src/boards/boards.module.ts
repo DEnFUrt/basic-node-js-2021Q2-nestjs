@@ -9,5 +9,6 @@ import { Columns } from './entities/column.entity';
   imports: [TypeOrmModule.forFeature([Board, Columns])],
   controllers: [BoardsController],
   providers: [BoardsService],
+  exports: [BoardsService],
 })
 export class BoardsModule {}

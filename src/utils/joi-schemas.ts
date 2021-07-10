@@ -3,12 +3,6 @@ import Joi from 'joi';
 const rgxPassword = new RegExp('^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[_!@#$%^&*])(?=.{8,})');
 
 export const schemas = {
-  uuidID: Joi.string()
-    .guid({
-      version: ['uuidv4', 'uuidv5'],
-    })
-    .allow(null),
-
   auth: Joi.object()
     .options({ abortEarly: false, allowUnknown: true })
     .keys({
@@ -46,6 +40,14 @@ export const schemas = {
       order: Joi.number().required(),
 
       description: Joi.string().min(1).max(1000).required(),
+
+      columnId: Joi.string()
+        .guid({ version: ['uuidv4', 'uuidv5'] })
+        .allow(null),
+
+      userId: Joi.string()
+        .guid({ version: ['uuidv4', 'uuidv5'] })
+        .allow(null),
     }),
 };
 
