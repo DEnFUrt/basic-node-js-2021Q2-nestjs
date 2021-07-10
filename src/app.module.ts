@@ -4,6 +4,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UsersModule } from './users/users.module';
+import { BoardsModule } from './boards/boards.module';
 
 import config from './common/config';
 // import { User } from './users/entities/user.entity';
@@ -18,6 +19,7 @@ import config from './common/config';
       // entities: [User],
     }),
     UsersModule,
+    BoardsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
