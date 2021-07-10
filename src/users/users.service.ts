@@ -9,6 +9,7 @@ import { Repository } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
 import { ResponseUserDto } from './dto/response-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { UserDto } from './dto/user.dto';
 import { User } from './entities/user.entity';
 
 @Injectable()
@@ -18,7 +19,7 @@ export class UsersService {
     private userRepository: Repository<User>,
   ) {}
 
-  private toResponse(user: User): ResponseUserDto {
+  private toResponse(user: UserDto): ResponseUserDto {
     const { id, name, login } = user;
     return { id, name, login };
   }
@@ -44,7 +45,7 @@ export class UsersService {
     return this.toResponse(user);
   }
 
-  async findOneByLogin(login: string): Promise<User | undefined> {
+  async findOneByLogin(login: string): Promise<UserDto | undefined> {
     const user = await this.userRepository.findOne({ login });
 
     if (user === undefined) {

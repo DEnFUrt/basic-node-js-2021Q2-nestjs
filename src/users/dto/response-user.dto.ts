@@ -1,5 +1,4 @@
-export class ResponseUserDto {
-  name!: string;
-  login!: string;
-  id!: string;
-}
+import { OmitType } from '@nestjs/mapped-types';
+import { UserDto } from './user.dto';
+
+export class ResponseUserDto extends OmitType(UserDto, ['password' as const]) {}
