@@ -32,13 +32,13 @@ export class BoardsController {
   }
 
   @Get(':id')
-  findOne(@Param('id', new ParseUUIDPipe()) id: string) {
+  findOne(@Param('id', ParseUUIDPipe) id: string) {
     return this.boardsService.findOne(id);
   }
 
   @Put(':id')
   update(
-    @Param('id', new ParseUUIDPipe()) id: string,
+    @Param('id', ParseUUIDPipe) id: string,
     @Body(new JoiValidationPipe(schemas['board'])) updateBoardDto: UpdateBoardDto,
   ) {
     return this.boardsService.update(id, updateBoardDto);
@@ -46,7 +46,7 @@ export class BoardsController {
 
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
-  remove(@Param('id', new ParseUUIDPipe()) id: string) {
+  remove(@Param('id', ParseUUIDPipe) id: string) {
     return this.boardsService.remove(id);
   }
 }

@@ -23,29 +23,29 @@ export class TasksController {
   @Post()
   @HttpCode(HttpStatus.CREATED)
   create(
-    @Param('boardId', new ParseUUIDPipe()) boardId: string,
+    @Param('boardId', ParseUUIDPipe) boardId: string,
     @Body(new JoiValidationPipe(schemas['task'])) createTaskDto: CreateTaskDto,
   ) {
     return this.tasksService.create({ ...createTaskDto, boardId });
   }
 
   @Get()
-  findAll(@Param('boardId', new ParseUUIDPipe()) boardId: string) {
+  findAll(@Param('boardId', ParseUUIDPipe) boardId: string) {
     return this.tasksService.findAllByBoard(boardId);
   }
 
   @Get(':id')
   findOne(
-    @Param('boardId', new ParseUUIDPipe()) boardId: string,
-    @Param('id', new ParseUUIDPipe()) id: string,
+    @Param('boardId', ParseUUIDPipe) boardId: string,
+    @Param('id', ParseUUIDPipe) id: string,
   ) {
     return this.tasksService.findOneByBoardId({ id, boardId });
   }
 
   @Put(':id')
   update(
-    @Param('boardId', new ParseUUIDPipe()) boardId: string,
-    @Param('id', new ParseUUIDPipe()) id: string,
+    @Param('boardId', ParseUUIDPipe) boardId: string,
+    @Param('id', ParseUUIDPipe) id: string,
     @Body(new JoiValidationPipe(schemas['task'])) updateTaskDto: UpdateTaskDto,
   ) {
     return this.tasksService.update({ ...updateTaskDto, boardId, id });
@@ -53,10 +53,7 @@ export class TasksController {
 
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
-  remove(
-    @Param('boardId', new ParseUUIDPipe()) boardId: string,
-    @Param('id', new ParseUUIDPipe()) id: string,
-  ) {
+  remove(@Param('boardId', ParseUUIDPipe) boardId: string, @Param('id', ParseUUIDPipe) id: string) {
     return this.tasksService.remove({ id, boardId });
   }
 }
