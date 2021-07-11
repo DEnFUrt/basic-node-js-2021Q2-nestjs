@@ -1,17 +1,18 @@
+import { Logger } from '@nestjs/common';
 import { getConnection, QueryRunner } from 'typeorm';
-// import { TypeOrmModule } from '@nestjs/typeorm';
-// import StatusCodes from 'http-status-codes';
-// import { getUserByLogin, create } from '../resources/users/user-service';
-// import { PG_DB, LOGIN_ADMIN, PASSWORD_ADMIN } from '../common/config';
-// import logger from '../logger/logger';
+import * as bcrypt from 'bcrypt';
+import { User } from '../users/entities/user.entity';
 
-// const { OK } = StatusCodes;
 const TABLE_NAME = 'user'; // user table name
 
 export const createAdmin = async ({
-  PG_DB /* LOGIN_ADMIN, PASSWORD_ADMIN */,
+  PG_DB,
+  PASSWORD_ADMIN,
+  LOGIN_ADMIN,
 }: {
   PG_DB: string;
+  PASSWORD_ADMIN: string;
+  LOGIN_ADMIN: string;
 }): Promise<void> => {
   try {
     const connection = getConnection();
@@ -33,20 +34,22 @@ export const createAdmin = async ({
           `No migration file was found, to generate the migration file, run the command: npm run migration:generation -n <nameMigration>, also restart app!`,
         );
       }
-    }
-    /* 
-      logger.serverInfo(
+
+      Logger.log(
         `Migration was perfomed with yhe following parameters: ${JSON.stringify(resultMigration)}`,
       );
     }
 
-    const user = await getUserByLogin(<string>LOGIN_ADMIN);
+    const isAdmin = await connection.getRepository(User).findOne({ login: LOGIN_ADMIN });
 
-    if (user.statusCode === OK) {
-      return;
+    if (isAdmin === undefined) {
+      const hashedPassword = await bcrypt.hash(<string>PASSWORD_ADMIN, 10);
+
+      const admin = connection
+        .getRepository(User)
+        .create({ name: 'Admin', login: <string>LOGIN_ADMIN, password: hashedPassword });
+      await connection.getRepository(User).save(admin);
     }
-
-    await create({ name: 'Admin', login: <string>LOGIN_ADMIN, password: <string>PASSWORD_ADMIN }); */
   } catch (e) {
     throw Error(e);
   }

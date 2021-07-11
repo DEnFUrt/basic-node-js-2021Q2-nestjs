@@ -14,7 +14,7 @@ export class TasksService {
   constructor(
     @InjectRepository(Task)
     private taskRepository: Repository<Task>,
-    private boardsService: BoardsService,
+    private readonly boardsService: BoardsService,
   ) {}
 
   async create(createTaskDto: CreateTaskDto): Promise<TaskDto> {

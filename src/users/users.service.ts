@@ -11,12 +11,14 @@ import { ResponseUserDto } from './dto/response-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UserDto } from './dto/user.dto';
 import { User } from './entities/user.entity';
+import { CryptoService } from 'src/utils-crypto/crypto.service';
 
 @Injectable()
 export class UsersService {
   constructor(
     @InjectRepository(User)
-    private userRepository: Repository<User>,
+    private readonly userRepository: Repository<User>,
+    private readonly cryptoService: CryptoService,
   ) {}
 
   private toResponse(user: UserDto): ResponseUserDto {
@@ -25,7 +27,12 @@ export class UsersService {
   }
 
   async create(createUserDto: CreateUserDto): Promise<ResponseUserDto> {
-    const user = this.userRepository.create(createUserDto);
+    const { password } = createUserDto;
+
+    const hashedPassword = await this.cryptoService.hashByPassword(password /* , SOLT_ROUNDS */);
+    const newUserDto = { ...createUserDto, password: hashedPassword };
+
+    const user = this.userRepository.create(newUserDto);
     const savedUser = await this.userRepository.save(user);
     return this.toResponse(savedUser);
   }
@@ -56,7 +63,19 @@ export class UsersService {
   }
 
   async update(id: string, updateUserDto: UpdateUserDto): Promise<ResponseUserDto | undefined> {
-    const result = await this.userRepository.update(id, updateUserDto);
+    const { password } = updateUserDto;
+    // const SOLT_ROUNDS = this.configService.get('SOLT_ROUNDS');
+
+    const hashedPassword =
+      password !== undefined
+        ? await this.cryptoService.hashByPassword(password /* , SOLT_ROUNDS */)
+        : null;
+    const newUpdateUserDto =
+      hashedPassword === null
+        ? { ...updateUserDto }
+        : { ...updateUserDto, password: hashedPassword };
+
+    const result = await this.userRepository.update(id, newUpdateUserDto);
     const { affected } = result;
 
     if (affected !== undefined && affected > 0) {
