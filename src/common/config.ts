@@ -4,7 +4,7 @@ const APPROOT = String(appRoot);
 
 export default () => ({
   // application
-  APP_VERSION: '1.0',
+  APP_VERSION: 'v.1.0',
   APP_PORT: parseInt(process.env['PORT'] as string, 10),
   // logger
   DIR_LOG: `${APPROOT}/logs`,

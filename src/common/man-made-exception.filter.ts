@@ -1,26 +1,35 @@
-import {
-  ArgumentsHost,
-  Catch,
-  ExceptionFilter,
-  HttpException,
-  HttpStatus,
-  Logger,
-} from '@nestjs/common';
+import { ArgumentsHost, Catch, ExceptionFilter, HttpException, HttpStatus } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { Request, Response } from 'express';
+import { Streams } from 'src/logger/streams';
 import { fullUrl } from '../utils/full-url';
 
 @Catch()
 export class ManMadeExceptionFilter implements ExceptionFilter {
+  constructor(private configService: ConfigService, private streams: Streams) {}
   catch(exception: Error, host: ArgumentsHost) {
     const httpArgumentsHost = host.switchToHttp();
     const req = httpArgumentsHost.getRequest<Request>();
     const res = httpArgumentsHost.getResponse<Response>();
-    const { headers } = req;
-    const url = fullUrl(req);
+
+    const { headers, method } = req;
+    const url = req ? fullUrl(req) : '';
     const { message, stack } = exception;
+    const stampDate = new Date().toLocaleString();
 
     const statusCode: number =
       exception instanceof HttpException ? exception.getStatus() : HttpStatus.INTERNAL_SERVER_ERROR;
+
+    const textMessage = `Error: ${stampDate} -> Method: ${method}, Status: ${statusCode}, URL: ${url}, Message: ${message},\nStack: ${stack}`;
+    const jsonMessage = {
+      Error: stampDate,
+      method,
+      statusCode,
+      url,
+      headers,
+      message,
+      stack,
+    };
 
     res.status(statusCode).json({
       timestamp: new Date().toISOString(),
@@ -29,10 +38,16 @@ export class ManMadeExceptionFilter implements ExceptionFilter {
       path: url,
     });
 
-    Logger.debug('ErrorException');
-    Logger.error('Request URL: ', url);
-    Logger.error('Request headers: ', JSON.stringify(headers));
-    Logger.error('Message: ', message);
-    Logger.error('Stack: ', stack);
+    this.writeLog(jsonMessage, textMessage);
+  }
+
+  private writeLog(jsonMessage: any, textMessage: string): void {
+    const NODE_ENV = this.configService.get<string>('NODE_ENV');
+
+    this.streams.streamErrLog(`${JSON.stringify(jsonMessage)}\n`);
+
+    if (NODE_ENV !== 'production') {
+      this.streams.streamConsLog(`${textMessage}\n`);
+    }
   }
 }

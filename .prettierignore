@@ -6,6 +6,7 @@ dist/
 node_modules/
 .github
 .vscode
+/src/migration
 
 *.css
 *.html
