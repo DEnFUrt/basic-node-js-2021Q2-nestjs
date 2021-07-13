@@ -1,13 +1,13 @@
-import * as bcrypt from 'bcrypt';
 import {
   Global,
   Injectable,
   InternalServerErrorException,
   UnauthorizedException,
 } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
+import * as bcrypt from 'bcrypt';
 import { verify, sign, Secret, SignOptions } from 'jsonwebtoken';
 import { promisify } from 'util';
-import { ConfigService } from '@nestjs/config';
 
 type AuthUser = { id: string; login: string };
 

@@ -13,6 +13,7 @@ import { LoginModule } from './login/login.module';
 import { LoggingInterceptor } from './logger/logger.interceptor';
 import { Streams } from './logger/streams';
 import { ManMadeExceptionFilter } from './exception-filters/man-made-exception.filter';
+import { UtilsModule } from './utils/utils.module';
 import config from './common/config';
 
 @Module({
@@ -26,6 +27,7 @@ import config from './common/config';
     BoardsModule,
     TasksModule,
     LoginModule,
+    UtilsModule,
   ],
   controllers: [AppController],
   providers: [

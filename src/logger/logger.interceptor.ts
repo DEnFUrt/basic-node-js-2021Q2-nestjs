@@ -2,24 +2,27 @@ import { Injectable, NestInterceptor, ExecutionContext, CallHandler } from '@nes
 import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { Request, Response } from 'express';
-import { fullUrl } from 'src/utils/full-url';
-import { hidePass, BodyParser } from 'src/utils/hide-pass';
 import { ConfigService } from '@nestjs/config';
 import { Streams } from './streams';
+import { UtilsService } from 'src/utils/utils.service';
 
 @Injectable()
 export class LoggingInterceptor implements NestInterceptor {
-  constructor(private configService: ConfigService, private streams: Streams) {}
+  constructor(
+    private readonly configService: ConfigService,
+    private streams: Streams,
+    private readonly utilsService: UtilsService,
+  ) {}
   intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
     const httpArgumentsHost = context.switchToHttp();
     const req = httpArgumentsHost.getRequest<Request>();
     const res = httpArgumentsHost.getResponse<Response>();
 
     const { method, query } = req;
-    const body = req.body as BodyParser;
-    const url = fullUrl(req);
+    const body = req.body;
+    const url = this.utilsService.fullUrl(req);
     const startTime = Date.now();
-    const permittedBody = hidePass(body);
+    const permittedBody = this.utilsService.hidePass(body);
 
     return next.handle().pipe(
       tap((): void => {

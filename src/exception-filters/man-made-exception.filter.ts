@@ -2,18 +2,22 @@ import { ArgumentsHost, Catch, ExceptionFilter, HttpException, HttpStatus } from
 import { ConfigService } from '@nestjs/config';
 import { Request, Response } from 'express';
 import { Streams } from 'src/logger/streams';
-import { fullUrl } from '../utils/full-url';
+import { UtilsService } from 'src/utils/utils.service';
 
 @Catch()
 export class ManMadeExceptionFilter implements ExceptionFilter {
-  constructor(private configService: ConfigService, private streams: Streams) {}
+  constructor(
+    private readonly configService: ConfigService,
+    private streams: Streams,
+    private readonly utilsService: UtilsService,
+  ) {}
   catch(exception: Error, host: ArgumentsHost) {
     const httpArgumentsHost = host.switchToHttp();
     const req = httpArgumentsHost.getRequest<Request>();
     const res = httpArgumentsHost.getResponse<Response>();
 
     const { headers, method } = req;
-    const url = req ? fullUrl(req) : '';
+    const url = req ? this.utilsService.fullUrl(req) : '';
     const { message, stack } = exception;
     const stampDate = new Date().toLocaleString();
 

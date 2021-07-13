@@ -35,12 +35,12 @@ services:
         # volumes: 
         #     - pgdata:/var/lib/postgresql/data
         ports: 
-            - ${PG_PORT}:${PG_PORT}
+            - ${TYPEORM_PORT}:${TYPEORM_PORT}
         environment: 
-            POSTGRES_USER: ${PG_USER}
-            POSTGRES_PASSWORD: ${PG_PASSWORD}
-            POSTGRES_DB: ${PG_DB}
-            POSTGRES_PORT: ${PG_PORT}
+            POSTGRES_USER: ${TYPEORM_USERNAME}
+            POSTGRES_PASSWORD: ${TYPEORM_PASSWORD}
+            POSTGRES_DB: ${TYPEORM_DATABASE}
+            POSTGRES_PORT: ${TYPEORM_PORT}
         networks: 
             - docker_net
 

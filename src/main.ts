@@ -32,11 +32,11 @@ async function bootstrap(): Promise<void> {
 
   const APP_PORT = configService.get('PORT') as number;
   const APP_VERSION = configService.get('APP_VERSION') as string;
-  const PG_DB = configService.get('PG_DB') as string;
+  const TYPEORM_DATABASE = configService.get('TYPEORM_DATABASE') as string;
   const LOGIN_ADMIN = configService.get('LOGIN_ADMIN') as string;
   const PASSWORD_ADMIN = configService.get('PASSWORD_ADMIN') as string;
 
-  void createAdmin({ PG_DB, PASSWORD_ADMIN, LOGIN_ADMIN })
+  void createAdmin({ TYPEORM_DATABASE, PASSWORD_ADMIN, LOGIN_ADMIN })
     .then(() =>
       Logger.log(`Admin user exists or has been created: login - admin, password - admin`),
     )

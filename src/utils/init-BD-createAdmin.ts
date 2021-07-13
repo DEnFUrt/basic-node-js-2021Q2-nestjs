@@ -6,11 +6,11 @@ import { User } from '../users/entities/user.entity';
 const TABLE_NAME = 'user'; // user table name
 
 export const createAdmin = async ({
-  PG_DB,
+  TYPEORM_DATABASE,
   PASSWORD_ADMIN,
   LOGIN_ADMIN,
 }: {
-  PG_DB: string;
+  TYPEORM_DATABASE: string;
   PASSWORD_ADMIN: string;
   LOGIN_ADMIN: string;
 }): Promise<void> => {
@@ -18,10 +18,10 @@ export const createAdmin = async ({
     const connection = getConnection();
     const queryRunner: QueryRunner = connection.createQueryRunner();
 
-    const isHasDB = await queryRunner.hasDatabase(<string>PG_DB);
+    const isHasDB = await queryRunner.hasDatabase(<string>TYPEORM_DATABASE);
 
     if (!isHasDB) {
-      throw Error(`${PG_DB} database does not exist, check config file`);
+      throw Error(`${TYPEORM_DATABASE} database does not exist, check config file`);
     }
 
     const isHasTable = await queryRunner.hasTable(TABLE_NAME);
