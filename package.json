@@ -48,6 +48,7 @@
     "@nestjs/mapped-types": "*",
     "@nestjs/passport": "^8.0.0",
     "@nestjs/platform-express": "^7.6.15",
+    "@nestjs/platform-fastify": "^8.0.4",
     "@nestjs/swagger": "^4.8.2",
     "@nestjs/typeorm": "^7.1.5",
     "bcrypt": "^5.0.1",

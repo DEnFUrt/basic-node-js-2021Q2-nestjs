@@ -1,4 +1,4 @@
-import { ForbiddenException, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { LoginDto } from './dto/login.dto';
 import { UsersService } from 'src/users/users.service';
 import { CryptoService } from 'src/utils-crypto/crypto.service';
@@ -10,13 +10,13 @@ export class LoginService {
     private readonly cryptoService: CryptoService,
   ) {}
 
-  async signToken(loginDto: LoginDto): Promise<{ token: string }> {
+  async signToken(loginDto: LoginDto): Promise<{ token: string } | undefined> {
     const { login: reqLogin, password: reqPassword } = loginDto;
 
     const user = await this.userService.findOneByLogin(reqLogin);
 
     if (user === undefined) {
-      throw new ForbiddenException(`Incorrect login or password`);
+      return undefined;
     }
 
     const { id, login, password: hashedPassword } = user;
@@ -24,7 +24,7 @@ export class LoginService {
     const resultReconciling = await this.cryptoService.chechkPassword(reqPassword, hashedPassword);
 
     if (resultReconciling !== true) {
-      throw new ForbiddenException(`Incorrect login or password`);
+      return undefined;
     }
 
     const token = (await this.cryptoService.createToken({ id, login })) as string;

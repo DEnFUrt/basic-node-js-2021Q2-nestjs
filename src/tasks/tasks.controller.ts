@@ -9,6 +9,8 @@ import {
   HttpCode,
   HttpStatus,
   ParseUUIDPipe,
+  NotFoundException,
+  BadRequestException,
 } from '@nestjs/common';
 import { TasksService } from './tasks.service';
 import { CreateTaskDto } from './dto/create-task.dto';
@@ -29,12 +31,24 @@ export class TasksController {
     @Param('boardId', ParseUUIDPipe) boardId: string,
     @Body(new JoiValidationPipe(schemas['task'])) createTaskDto: CreateTaskDto,
   ) {
-    return this.tasksService.create({ ...createTaskDto, boardId });
+    const result = this.tasksService.create({ ...createTaskDto, boardId });
+
+    if (result === undefined) {
+      throw new BadRequestException();
+    }
+
+    return result;
   }
 
   @Get()
   findAll(@Param('boardId', ParseUUIDPipe) boardId: string) {
-    return this.tasksService.findAllByBoard(boardId);
+    const result = this.tasksService.findAllByBoard(boardId);
+
+    if (result === undefined) {
+      throw new NotFoundException();
+    }
+
+    return result;
   }
 
   @Get(':id')
@@ -42,7 +56,13 @@ export class TasksController {
     @Param('boardId', ParseUUIDPipe) boardId: string,
     @Param('id', ParseUUIDPipe) id: string,
   ) {
-    return this.tasksService.findOneByBoardId({ id, boardId });
+    const result = this.tasksService.findOneByBoardId({ id, boardId });
+
+    if (result === undefined) {
+      throw new NotFoundException();
+    }
+
+    return result;
   }
 
   @Put(':id')
@@ -51,12 +71,22 @@ export class TasksController {
     @Param('id', ParseUUIDPipe) id: string,
     @Body(new JoiValidationPipe(schemas['task'])) updateTaskDto: UpdateTaskDto,
   ) {
-    return this.tasksService.update({ ...updateTaskDto, boardId, id });
+    const result = this.tasksService.update({ ...updateTaskDto, boardId, id });
+
+    if (result === undefined) {
+      throw new BadRequestException();
+    }
+
+    return result;
   }
 
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
   remove(@Param('boardId', ParseUUIDPipe) boardId: string, @Param('id', ParseUUIDPipe) id: string) {
-    return this.tasksService.remove({ id, boardId });
+    const result = this.tasksService.remove({ id, boardId });
+
+    if (result === undefined) {
+      throw new BadRequestException();
+    }
   }
 }

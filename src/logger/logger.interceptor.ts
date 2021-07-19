@@ -5,6 +5,7 @@ import { Request, Response } from 'express';
 import { ConfigService } from '@nestjs/config';
 import { Streams } from './streams';
 import { UtilsService } from 'src/utils/utils.service';
+import { IJsonMessage } from 'src/common/interfaces';
 
 @Injectable()
 export class LoggingInterceptor implements NestInterceptor {
@@ -49,7 +50,7 @@ export class LoggingInterceptor implements NestInterceptor {
     );
   }
 
-  private writeLog(jsonMessage: any, textMessage: string): void {
+  private writeLog(jsonMessage: IJsonMessage, textMessage: string): void {
     const NODE_ENV = this.configService.get<string>('NODE_ENV');
 
     this.streams.streamInfoLog(`${JSON.stringify(jsonMessage)}\n`);

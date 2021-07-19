@@ -1,38 +1,28 @@
 import { NestFactory } from '@nestjs/core';
+import { FastifyAdapter, NestFastifyApplication } from '@nestjs/platform-fastify';
 import { ConfigService } from '@nestjs/config';
 import { AppModule } from './app.module';
 import { Logger } from '@nestjs/common';
-import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { SwaggerModule } from '@nestjs/swagger';
+import { customOptions, options } from './common/swagger-options';
 
-import { createAdmin } from './utils/init-BD-createAdmin';
-import { SwaggerCustomOptions } from './common/swagger-interface';
+// import { createAdmin } from './utils/init-BD-createAdmin';
 
 declare const module: any;
 
-const options = (props: any) => {
-  const APP_VERSION = props?.version || '1.0.1';
-  return new DocumentBuilder()
-    .setTitle('Basic Nest JS API')
-    .setDescription('Nest Framework Rest API')
-    .setVersion(APP_VERSION)
-    .addBearerAuth()
-    .build();
-};
-
-const customOptions: SwaggerCustomOptions = {
-  swaggerOptions: {
-    persistAuthorization: true,
-  },
-  customSiteTitle: 'My API Docs',
-};
-
 async function bootstrap(): Promise<void> {
-  const app = await NestFactory.create(AppModule, { cors: true });
+  const USE_FASTIFY = process.env['USE_FASTIFY'] === 'true' ? true : false;
+
+  const app = USE_FASTIFY
+    ? await NestFactory.create<NestFastifyApplication>(AppModule, new FastifyAdapter())
+    : await NestFactory.create(AppModule, { cors: true });
+
   const configService = app.get(ConfigService);
 
-  const APP_PORT = configService.get('PORT') as number;
+  const APP_PORT = configService.get('APP_PORT') as number;
   const APP_VERSION = configService.get('APP_VERSION') as string;
-  const TYPEORM_DATABASE = configService.get('TYPEORM_DATABASE') as string;
+
+  /*   const TYPEORM_DATABASE = configService.get('TYPEORM_DATABASE') as string;
   const LOGIN_ADMIN = configService.get('LOGIN_ADMIN') as string;
   const PASSWORD_ADMIN = configService.get('PASSWORD_ADMIN') as string;
 
@@ -40,7 +30,7 @@ async function bootstrap(): Promise<void> {
     .then(() =>
       Logger.log(`Admin user exists or has been created: login - admin, password - admin`),
     )
-    .catch((e) => Logger.error(`Error create user Admin: ${e}`));
+    .catch((e) => Logger.error(`Error create user Admin: ${e}`)); */
 
   const document = SwaggerModule.createDocument(app, options({ version: APP_VERSION }));
   SwaggerModule.setup('/doc', app, document, customOptions);

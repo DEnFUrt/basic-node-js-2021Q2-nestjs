@@ -9,6 +9,8 @@ import {
   HttpCode,
   HttpStatus,
   ParseUUIDPipe,
+  NotFoundException,
+  BadRequestException,
 } from '@nestjs/common';
 import { BoardsService } from './boards.service';
 import { CreateBoardDto } from './dto/create-board.dto';
@@ -36,7 +38,13 @@ export class BoardsController {
 
   @Get(':id')
   findOne(@Param('id', ParseUUIDPipe) id: string) {
-    return this.boardsService.findOne(id);
+    const result = this.boardsService.findOne(id);
+
+    if (result === undefined) {
+      throw new NotFoundException();
+    }
+
+    return result;
   }
 
   @Put(':id')
@@ -44,12 +52,22 @@ export class BoardsController {
     @Param('id', ParseUUIDPipe) id: string,
     @Body(new JoiValidationPipe(schemas['board'])) updateBoardDto: UpdateBoardDto,
   ) {
-    return this.boardsService.update(id, updateBoardDto);
+    const result = this.boardsService.update(id, updateBoardDto);
+
+    if (result === undefined) {
+      throw new BadRequestException();
+    }
+
+    return result;
   }
 
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
   remove(@Param('id', ParseUUIDPipe) id: string) {
-    return this.boardsService.remove(id);
+    const result = this.boardsService.remove(id);
+
+    if (result === undefined) {
+      throw new BadRequestException();
+    }
   }
 }

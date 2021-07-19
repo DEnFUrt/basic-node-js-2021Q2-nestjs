@@ -5,10 +5,12 @@ import ph from 'path';
 import { stdout, stderr } from 'process';
 import { ConfigService } from '@nestjs/config';
 
-const fsStat = promisify(fs.stat);
-const fsRename = promisify(fs.rename);
-const fsMkdir = promisify(fs.mkdir);
-const fsAccess = promisify(fs.access);
+const { stat, rename, mkdir, access } = fs;
+
+const fsStat = promisify(stat);
+const fsRename = promisify(rename);
+const fsMkdir = promisify(mkdir);
+const fsAccess = promisify(access);
 
 type StreamsWriteFunc = (message: string) => void;
 type PropsRenameFileFunc = { pathFile: string; nameFile: string; dir: string };

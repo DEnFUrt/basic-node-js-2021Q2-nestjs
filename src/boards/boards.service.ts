@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { BoardDto } from './dto/board.dto';
@@ -23,13 +23,7 @@ export class BoardsService {
   }
 
   async findOne(id: string): Promise<BoardDto | undefined> {
-    const board = await this.boardRepository.findOne(id, { relations: ['columns'] });
-
-    if (board === undefined) {
-      throw new NotFoundException();
-    }
-
-    return board;
+    return await this.boardRepository.findOne(id, { relations: ['columns'] });
   }
 
   async update(id: string, updateBoardDto: UpdateBoardDto): Promise<BoardDto | undefined> {
@@ -37,11 +31,14 @@ export class BoardsService {
     return await this.boardRepository.save(updateBoardDto);
   }
 
-  async remove(id: string): Promise<void> {
+  async remove(id: string): Promise<boolean | undefined> {
     const result = await this.boardRepository.delete(id);
+    const { affected } = result;
 
-    if (!result.affected) {
-      throw new NotFoundException();
+    if (affected && affected > 0) {
+      return true;
     }
+
+    return undefined;
   }
 }

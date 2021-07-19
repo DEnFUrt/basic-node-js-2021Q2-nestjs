@@ -1,5 +1,4 @@
-import { Body, Controller, Post } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
+import { Body, Controller, ForbiddenException, Post } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { LoginDto } from './dto/login.dto';
 import { LoginService } from './login.service';
@@ -7,23 +6,18 @@ import { LoginService } from './login.service';
 @ApiTags('login')
 @Controller('login')
 export class LoginController {
-  constructor(
-    private readonly loginService: LoginService,
-    private readonly configService: ConfigService,
-  ) {}
+  constructor(private readonly loginService: LoginService) {}
 
   @Post()
   create(@Body() loginDto: LoginDto) {
     const { login, password } = loginDto;
 
-    return this.loginService.signToken({ login, password });
-  }
+    const result = this.loginService.signToken({ login, password });
 
-  /* 
-  // import { schemas } from 'src/utils/joi-schemas';
-  // import { JoiValidationPipe } from 'src/utils/Joi-validation-pipe';
+    if (result === undefined) {
+      throw new ForbiddenException(`Incorrect login or password`);
+    }
 
-    (new JoiValidationPipe(schemas['auth']))
+    return result;
   }
-  */
 }

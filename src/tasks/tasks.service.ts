@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { TaskDto } from './dto/task.dto';
@@ -17,7 +17,7 @@ export class TasksService {
     private readonly boardsService: BoardsService,
   ) {}
 
-  async create(createTaskDto: CreateTaskDto): Promise<TaskDto> {
+  async create(createTaskDto: CreateTaskDto): Promise<TaskDto | undefined> {
     const { boardId } = createTaskDto;
     await this.boardsService.findOne(boardId as string);
 
@@ -30,13 +30,7 @@ export class TasksService {
   }
 
   async findOneByBoardId(props: TEntitiesID): Promise<TaskDto | undefined> {
-    const task = await this.taskRepository.findOne(props);
-
-    if (task === undefined) {
-      throw new NotFoundException();
-    }
-
-    return task;
+    return await this.taskRepository.findOne(props);
   }
 
   async update(updateTaskDto: UpdateTaskDto): Promise<TaskDto | undefined> {
@@ -47,11 +41,14 @@ export class TasksService {
     return await this.taskRepository.save(updateTaskDto);
   }
 
-  async remove(props: TEntitiesID): Promise<void> {
+  async remove(props: TEntitiesID): Promise<boolean | undefined> {
     const result = await this.taskRepository.delete(props);
+    const { affected } = result;
 
-    if (!result.affected) {
-      throw new NotFoundException();
+    if (affected && affected > 0) {
+      return true;
     }
+
+    return undefined;
   }
 }

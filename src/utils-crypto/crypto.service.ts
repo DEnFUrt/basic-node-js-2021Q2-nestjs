@@ -39,18 +39,21 @@ export class CryptoService {
     try {
       if (authHeader === undefined) {
         throw Error();
+        // return false;
       }
 
       const [type, token] = authHeader.split(' ');
 
       if (type !== 'Bearer' || token === undefined) {
         throw Error();
+        // return false;
       }
 
       await jwtVerify(token, this.JWT_SECRET_KEY);
 
       return true;
     } catch {
+      // return false;
       throw new UnauthorizedException('Wrong auth schemas!');
     }
   };

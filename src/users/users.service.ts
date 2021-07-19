@@ -1,9 +1,4 @@
-import {
-  BadRequestException,
-  ForbiddenException,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -29,7 +24,7 @@ export class UsersService {
   async create(createUserDto: CreateUserDto): Promise<ResponseUserDto> {
     const { password } = createUserDto;
 
-    const hashedPassword = await this.cryptoService.hashByPassword(password /* , SOLT_ROUNDS */);
+    const hashedPassword = await this.cryptoService.hashByPassword(password);
     const newUserDto = { ...createUserDto, password: hashedPassword };
 
     const user = this.userRepository.create(newUserDto);
@@ -45,36 +40,34 @@ export class UsersService {
   async findOne(id: string): Promise<ResponseUserDto | undefined> {
     const user = await this.userRepository.findOne(id);
 
-    if (user === undefined) {
-      throw new NotFoundException();
+    if (user !== undefined) {
+      return this.toResponse(user);
     }
 
-    return this.toResponse(user);
+    return undefined;
   }
 
   async findOneByLogin(login: string): Promise<UserDto | undefined> {
     const user = await this.userRepository.findOne({ login });
 
-    if (user === undefined) {
-      throw new ForbiddenException();
+    if (user !== undefined) {
+      return user;
     }
 
-    return user;
+    return undefined;
   }
 
   async update(id: string, updateUserDto: UpdateUserDto): Promise<ResponseUserDto | undefined> {
     const { password } = updateUserDto;
-    // const SOLT_ROUNDS = this.configService.get('SOLT_ROUNDS');
 
     const hashedPassword =
-      password !== undefined
-        ? await this.cryptoService.hashByPassword(password /* , SOLT_ROUNDS */)
-        : null;
+      password !== undefined ? await this.cryptoService.hashByPassword(password) : null;
     const newUpdateUserDto =
       hashedPassword === null
         ? { ...updateUserDto }
         : { ...updateUserDto, password: hashedPassword };
 
+    // Вариант использования метода update
     const result = await this.userRepository.update(id, newUpdateUserDto);
     const { affected } = result;
 
@@ -82,14 +75,17 @@ export class UsersService {
       return this.findOne(id);
     }
 
-    throw new BadRequestException();
+    return undefined;
   }
 
-  async remove(id: string): Promise<void> {
+  async remove(id: string): Promise<boolean | undefined> {
     const result = await this.userRepository.delete(id);
+    const { affected } = result;
 
-    if (!result.affected) {
-      throw new NotFoundException();
+    if (affected && affected > 0) {
+      return true;
     }
+
+    return undefined;
   }
 }

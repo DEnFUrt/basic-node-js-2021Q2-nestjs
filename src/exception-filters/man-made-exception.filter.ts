@@ -1,6 +1,7 @@
 import { ArgumentsHost, Catch, ExceptionFilter, HttpException, HttpStatus } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Request, Response } from 'express';
+import { IJsonMessage } from 'src/common/interfaces';
 import { Streams } from 'src/logger/streams';
 import { UtilsService } from 'src/utils/utils.service';
 
@@ -35,17 +36,26 @@ export class ManMadeExceptionFilter implements ExceptionFilter {
       stack,
     };
 
-    res.status(statusCode).json({
-      timestamp: new Date().toISOString(),
-      statusCode,
-      message,
-      path: url,
-    });
+    const USE_FASTIFY = this.configService.get('USE_FASTIFY') as boolean;
+
+    USE_FASTIFY
+      ? res.status(statusCode).send({
+          timestamp: new Date().toISOString(),
+          statusCode,
+          message,
+          path: url,
+        })
+      : res.status(statusCode).json({
+          timestamp: new Date().toISOString(),
+          statusCode,
+          message,
+          path: url,
+        });
 
     this.writeLog(jsonMessage, textMessage);
   }
 
-  private writeLog(jsonMessage: any, textMessage: string): void {
+  private writeLog(jsonMessage: IJsonMessage, textMessage: string): void {
     const NODE_ENV = this.configService.get<string>('NODE_ENV');
 
     this.streams.streamErrLog(`${JSON.stringify(jsonMessage)}\n`);
