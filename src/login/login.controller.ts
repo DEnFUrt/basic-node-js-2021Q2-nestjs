@@ -9,10 +9,10 @@ export class LoginController {
   constructor(private readonly loginService: LoginService) {}
 
   @Post()
-  create(@Body() loginDto: LoginDto) {
+  async create(@Body() loginDto: LoginDto) {
     const { login, password } = loginDto;
 
-    const result = this.loginService.signToken({ login, password });
+    const result = await this.loginService.signToken({ login, password });
 
     if (result === undefined) {
       throw new ForbiddenException(`Incorrect login or password`);

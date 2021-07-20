@@ -14,7 +14,9 @@ async function bootstrap(): Promise<void> {
   const USE_FASTIFY = process.env['USE_FASTIFY'] === 'true' ? true : false;
 
   const app = USE_FASTIFY
-    ? await NestFactory.create<NestFastifyApplication>(AppModule, new FastifyAdapter())
+    ? await NestFactory.create<NestFastifyApplication>(AppModule, new FastifyAdapter(), {
+        cors: true,
+      })
     : await NestFactory.create(AppModule, { cors: true });
 
   const configService = app.get(ConfigService);
@@ -22,7 +24,7 @@ async function bootstrap(): Promise<void> {
   const APP_PORT = configService.get('APP_PORT') as number;
   const APP_VERSION = configService.get('APP_VERSION') as string;
 
-  /*   const TYPEORM_DATABASE = configService.get('TYPEORM_DATABASE') as string;
+  /* const TYPEORM_DATABASE = configService.get('TYPEORM_DATABASE') as string;
   const LOGIN_ADMIN = configService.get('LOGIN_ADMIN') as string;
   const PASSWORD_ADMIN = configService.get('PASSWORD_ADMIN') as string;
 

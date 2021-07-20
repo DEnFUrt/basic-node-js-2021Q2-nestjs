@@ -11,11 +11,13 @@ export class UtilsService {
   constructor(private readonly configService: ConfigService) {}
 
   public hidePass(body: BodyParser): BodyParser {
-    return body.password !== undefined ? { ...body, password: '*****' } : body;
+    const password = body !== null ? body.password : undefined;
+
+    return password !== undefined ? { ...body, password: '*****' } : body;
   }
 
   public fullUrl(req: Request): string {
-    const USE_FASTIFY = this.configService.get('USE_FASTIFY') as boolean;
+    const USE_FASTIFY = this.configService.get('USE_FASTIFY') === 'true' ? true : false;
 
     if (USE_FASTIFY) {
       const { hostname, protocol, url } = req;

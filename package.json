@@ -55,7 +55,7 @@
     "chai": "^4.3.4",
     "cross-env": "^7.0.3",
     "dirty-chai": "^2.0.1",
-    "fastify-swagger": "^4.8.2",
+    "fastify-swagger": "^4.8.3",
     "husky": "^7.0.1",
     "joi": "^17.4.0",
     "passport": "^0.4.1",

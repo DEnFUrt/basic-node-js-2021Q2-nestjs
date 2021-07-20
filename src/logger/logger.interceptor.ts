@@ -19,8 +19,8 @@ export class LoggingInterceptor implements NestInterceptor {
     const req = httpArgumentsHost.getRequest<Request>();
     const res = httpArgumentsHost.getResponse<Response>();
 
-    const { method, query } = req;
-    const body = req.body;
+    const { method, query, body } = req;
+
     const url = this.utilsService.fullUrl(req);
     const startTime = Date.now();
     const permittedBody = this.utilsService.hidePass(body);

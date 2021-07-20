@@ -36,7 +36,7 @@ export class ManMadeExceptionFilter implements ExceptionFilter {
       stack,
     };
 
-    const USE_FASTIFY = this.configService.get('USE_FASTIFY') as boolean;
+    const USE_FASTIFY = this.configService.get('USE_FASTIFY') === 'true' ? true : false;
 
     USE_FASTIFY
       ? res.status(statusCode).send({
