@@ -16,9 +16,8 @@ export class AuthGuard implements CanActivate {
     const req = context.switchToHttp().getRequest();
     const routPath = USE_FASTIFY ? req.routerPath : req.path;
     const result = ROUTE_WHITELIST.includes(routPath);
-    // const authHeader = req.header('Authorization');
+
     const authHeader = req.headers.authorization;
-    console.log('authHeader: ############################', authHeader);
 
     if (!result) {
       return this.cryptoService.verifyToken(authHeader);

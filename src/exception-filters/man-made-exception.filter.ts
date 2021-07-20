@@ -1,6 +1,7 @@
 import { ArgumentsHost, Catch, ExceptionFilter, HttpException, HttpStatus } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Request, Response } from 'express';
+import type { FastifyReply, FastifyRequest } from 'fastify';
 import { IJsonMessage } from 'src/common/interfaces';
 import { Streams } from 'src/logger/streams';
 import { UtilsService } from 'src/utils/utils.service';
@@ -14,8 +15,8 @@ export class ManMadeExceptionFilter implements ExceptionFilter {
   ) {}
   catch(exception: Error, host: ArgumentsHost) {
     const httpArgumentsHost = host.switchToHttp();
-    const req = httpArgumentsHost.getRequest<Request>();
-    const res = httpArgumentsHost.getResponse<Response>();
+    const req: Request | FastifyRequest = httpArgumentsHost.getRequest();
+    const res: Response | FastifyReply = httpArgumentsHost.getResponse();
 
     const { headers, method } = req;
     const url = req ? this.utilsService.fullUrl(req) : '';
@@ -36,7 +37,7 @@ export class ManMadeExceptionFilter implements ExceptionFilter {
       stack,
     };
 
-    const USE_FASTIFY = this.configService.get('USE_FASTIFY') === 'true' ? true : false;
+    /* const USE_FASTIFY = this.configService.get('USE_FASTIFY') === 'true' ? true : false;
 
     USE_FASTIFY
       ? res.status(statusCode).send({
@@ -51,6 +52,14 @@ export class ManMadeExceptionFilter implements ExceptionFilter {
           message,
           path: url,
         });
+ */
+
+    res.status(statusCode).send({
+      timestamp: new Date().toISOString(),
+      statusCode,
+      message,
+      path: url,
+    });
 
     this.writeLog(jsonMessage, textMessage);
   }

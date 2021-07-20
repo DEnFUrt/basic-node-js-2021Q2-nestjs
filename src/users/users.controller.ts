@@ -11,7 +11,10 @@ import {
   ParseUUIDPipe,
   NotFoundException,
   BadRequestException,
+  Res,
 } from '@nestjs/common';
+import { Response } from 'express';
+import type { FastifyReply } from 'fastify';
 import { ApiBearerAuth, ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -31,47 +34,55 @@ export class UsersController {
   @ApiResponse({ status: 201, description: 'The create record', type: UserDto })
   @ApiBody({ description: 'The create record', type: UserDto })
   @HttpCode(HttpStatus.CREATED)
-  create(@Body(new JoiValidationPipe(schemas['user'])) createUserDto: CreateUserDto) {
-    return this.usersService.create(createUserDto);
+  async create(
+    @Body(new JoiValidationPipe(schemas['user'])) createUserDto: CreateUserDto,
+    @Res() res: Response | FastifyReply,
+  ) {
+    const result = await this.usersService.create(createUserDto);
+    res.send(result);
   }
 
   @Get()
-  findAll() {
-    return this.usersService.findAll();
+  async findAll(@Res() res: Response | FastifyReply) {
+    const result = await this.usersService.findAll();
+    res.send(result);
   }
 
   @Get(':id')
-  findOne(@Param('id', ParseUUIDPipe) id: string) {
-    const result = this.usersService.findOne(id);
+  async findOne(@Param('id', ParseUUIDPipe) id: string, @Res() res: Response | FastifyReply) {
+    const result = await this.usersService.findOne(id);
 
     if (result === undefined) {
       throw new NotFoundException();
     }
 
-    return result;
+    res.send(result);
   }
 
   @Put(':id')
-  update(
+  async update(
     @Param('id', ParseUUIDPipe) id: string,
     @Body(new JoiValidationPipe(schemas['user'])) updateUserDto: UpdateUserDto,
+    @Res() res: Response | FastifyReply,
   ) {
-    const result = this.usersService.update(id, updateUserDto);
+    const result = await this.usersService.update(id, updateUserDto);
 
     if (result === undefined) {
       throw new BadRequestException();
     }
 
-    return result;
+    res.send(result);
   }
 
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
-  remove(@Param('id', ParseUUIDPipe) id: string) {
-    const result = this.usersService.remove(id);
+  async remove(@Param('id', ParseUUIDPipe) id: string, @Res() res: Response | FastifyReply) {
+    const result = await this.usersService.remove(id);
 
     if (result === undefined) {
       throw new BadRequestException();
     }
+
+    res.send(result);
   }
 }

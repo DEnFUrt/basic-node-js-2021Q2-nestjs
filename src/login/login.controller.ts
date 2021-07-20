@@ -1,4 +1,6 @@
-import { Body, Controller, ForbiddenException, Post } from '@nestjs/common';
+import { Body, Controller, ForbiddenException, Post, Res } from '@nestjs/common';
+import { Response } from 'express';
+import type { FastifyReply } from 'fastify';
 import { ApiTags } from '@nestjs/swagger';
 import { LoginDto } from './dto/login.dto';
 import { LoginService } from './login.service';
@@ -9,7 +11,7 @@ export class LoginController {
   constructor(private readonly loginService: LoginService) {}
 
   @Post()
-  async create(@Body() loginDto: LoginDto) {
+  async create(@Body() loginDto: LoginDto, @Res() res: Response | FastifyReply) {
     const { login, password } = loginDto;
 
     const result = await this.loginService.signToken({ login, password });
@@ -18,6 +20,6 @@ export class LoginController {
       throw new ForbiddenException(`Incorrect login or password`);
     }
 
-    return result;
+    res.send(result);
   }
 }

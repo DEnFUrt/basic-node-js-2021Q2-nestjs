@@ -2,6 +2,7 @@ import { Injectable, NestInterceptor, ExecutionContext, CallHandler } from '@nes
 import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { Request, Response } from 'express';
+import type { FastifyReply, FastifyRequest } from 'fastify';
 import { ConfigService } from '@nestjs/config';
 import { Streams } from './streams';
 import { UtilsService } from 'src/utils/utils.service';
@@ -16,8 +17,8 @@ export class LoggingInterceptor implements NestInterceptor {
   ) {}
   intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
     const httpArgumentsHost = context.switchToHttp();
-    const req = httpArgumentsHost.getRequest<Request>();
-    const res = httpArgumentsHost.getResponse<Response>();
+    const req: Request | FastifyRequest = httpArgumentsHost.getRequest();
+    const res: Response | FastifyReply = httpArgumentsHost.getResponse();
 
     const { method, query, body } = req;
 

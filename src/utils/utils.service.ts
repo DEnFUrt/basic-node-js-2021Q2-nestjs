@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { Request } from 'express';
+import type { FastifyRequest } from 'fastify';
 import { ConfigService } from '@nestjs/config';
 
 import { ITaskBodyParser, IBoardBodyParser, IUserBodyParser } from '../common/interfaces';
@@ -16,7 +17,7 @@ export class UtilsService {
     return password !== undefined ? { ...body, password: '*****' } : body;
   }
 
-  public fullUrl(req: Request): string {
+  public fullUrl(req: Request | FastifyRequest): string {
     const USE_FASTIFY = this.configService.get('USE_FASTIFY') === 'true' ? true : false;
 
     if (USE_FASTIFY) {
@@ -25,8 +26,8 @@ export class UtilsService {
       return `${protocol}://${hostname}${url}`;
     }
 
-    const host = req.get('host') || '';
-    const { protocol, originalUrl } = req;
+    const host = (req as Request).get('host') || '';
+    const { protocol, originalUrl } = req as Request;
 
     return `${protocol}://${host}${originalUrl}`;
   }
