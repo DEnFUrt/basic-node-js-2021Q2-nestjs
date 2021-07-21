@@ -6,7 +6,7 @@ import {
   Put,
   Param,
   Delete,
-  HttpCode,
+  // HttpCode,
   HttpStatus,
   ParseUUIDPipe,
   NotFoundException,
@@ -33,19 +33,18 @@ export class UsersController {
   @ApiOperation({ summary: 'Create user' })
   @ApiResponse({ status: 201, description: 'The create record', type: UserDto })
   @ApiBody({ description: 'The create record', type: UserDto })
-  @HttpCode(HttpStatus.CREATED)
   async create(
     @Body(new JoiValidationPipe(schemas['user'])) createUserDto: CreateUserDto,
     @Res() res: Response | FastifyReply,
   ) {
     const result = await this.usersService.create(createUserDto);
-    res.send(result);
+    res.status(HttpStatus.CREATED).send(result);
   }
 
   @Get()
   async findAll(@Res() res: Response | FastifyReply) {
     const result = await this.usersService.findAll();
-    res.send(result);
+    res.status(HttpStatus.OK).send(result);
   }
 
   @Get(':id')
@@ -56,7 +55,7 @@ export class UsersController {
       throw new NotFoundException();
     }
 
-    res.send(result);
+    res.status(HttpStatus.OK).send(result);
   }
 
   @Put(':id')
@@ -71,11 +70,10 @@ export class UsersController {
       throw new BadRequestException();
     }
 
-    res.send(result);
+    res.status(HttpStatus.OK).send(result);
   }
 
   @Delete(':id')
-  @HttpCode(HttpStatus.NO_CONTENT)
   async remove(@Param('id', ParseUUIDPipe) id: string, @Res() res: Response | FastifyReply) {
     const result = await this.usersService.remove(id);
 
@@ -83,6 +81,6 @@ export class UsersController {
       throw new BadRequestException();
     }
 
-    res.send(result);
+    res.status(HttpStatus.NO_CONTENT);
   }
 }

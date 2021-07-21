@@ -1,4 +1,4 @@
-import { Body, Controller, ForbiddenException, Post, Res } from '@nestjs/common';
+import { Body, Controller, ForbiddenException, HttpStatus, Post, Res } from '@nestjs/common';
 import { Response } from 'express';
 import type { FastifyReply } from 'fastify';
 import { ApiTags } from '@nestjs/swagger';
@@ -20,6 +20,6 @@ export class LoginController {
       throw new ForbiddenException(`Incorrect login or password`);
     }
 
-    res.send(result);
+    res.status(HttpStatus.OK).send(result);
   }
 }
