@@ -6,12 +6,12 @@ import {
   Put,
   Param,
   Delete,
-  // HttpCode,
   HttpStatus,
   ParseUUIDPipe,
   NotFoundException,
   BadRequestException,
   Res,
+  HttpCode,
 } from '@nestjs/common';
 import { Response } from 'express';
 import type { FastifyReply } from 'fastify';
@@ -74,13 +74,12 @@ export class UsersController {
   }
 
   @Delete(':id')
-  async remove(@Param('id', ParseUUIDPipe) id: string, @Res() res: Response | FastifyReply) {
+  @HttpCode(HttpStatus.NO_CONTENT)
+  async remove(@Param('id', ParseUUIDPipe) id: string) {
     const result = await this.usersService.remove(id);
 
     if (result === undefined) {
       throw new BadRequestException();
     }
-
-    res.status(HttpStatus.NO_CONTENT);
   }
 }

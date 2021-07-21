@@ -11,6 +11,7 @@ import {
   ParseUUIDPipe,
   NotFoundException,
   BadRequestException,
+  HttpCode,
 } from '@nestjs/common';
 import { Response } from 'express';
 import type { FastifyReply } from 'fastify';
@@ -88,17 +89,15 @@ export class TasksController {
   }
 
   @Delete(':id')
+  @HttpCode(HttpStatus.NO_CONTENT)
   async remove(
     @Param('boardId', ParseUUIDPipe) boardId: string,
     @Param('id', ParseUUIDPipe) id: string,
-    @Res() res: Response | FastifyReply,
   ) {
     const result = await this.tasksService.remove({ id, boardId });
 
     if (result === undefined) {
       throw new BadRequestException();
     }
-
-    res.status(HttpStatus.NO_CONTENT);
   }
 }

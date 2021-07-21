@@ -7,6 +7,7 @@ import {
   Post,
   Param,
   Delete,
+  HttpCode,
   HttpStatus,
   ParseUUIDPipe,
   NotFoundException,
@@ -69,13 +70,12 @@ export class BoardsController {
   }
 
   @Delete(':id')
-  async remove(@Param('id', ParseUUIDPipe) id: string, @Res() res: Response | FastifyReply) {
+  @HttpCode(HttpStatus.NO_CONTENT)
+  async remove(@Param('id', ParseUUIDPipe) id: string) {
     const result = await this.boardsService.remove(id);
 
     if (result === undefined) {
       throw new BadRequestException();
     }
-
-    res.status(HttpStatus.NO_CONTENT);
   }
 }
