@@ -1,9 +1,4 @@
-import {
-  Global,
-  Injectable,
-  InternalServerErrorException,
-  UnauthorizedException,
-} from '@nestjs/common';
+import { Global, Injectable, InternalServerErrorException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import * as bcrypt from 'bcrypt';
 import { verify, sign, Secret, SignOptions } from 'jsonwebtoken';
@@ -38,23 +33,20 @@ export class CryptoService {
   public verifyToken = async (authHeader: string): Promise<boolean> => {
     try {
       if (authHeader === undefined) {
-        throw Error();
-        // return false;
+        return false;
       }
 
       const [type, token] = authHeader.split(' ');
 
       if (type !== 'Bearer' || token === undefined) {
-        throw Error();
-        // return false;
+        return false;
       }
 
       await jwtVerify(token, this.JWT_SECRET_KEY);
 
       return true;
     } catch {
-      // return false;
-      throw new UnauthorizedException('Wrong auth schemas!');
+      return false;
     }
   };
 

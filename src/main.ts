@@ -6,8 +6,6 @@ import { Logger } from '@nestjs/common';
 import { SwaggerModule } from '@nestjs/swagger';
 import { customOptions, options } from './common/swagger-options';
 
-// import { createAdmin } from './utils/init-BD-createAdmin';
-
 declare const module: any;
 
 async function bootstrap(): Promise<void> {
@@ -23,16 +21,6 @@ async function bootstrap(): Promise<void> {
 
   const APP_PORT = configService.get('APP_PORT') as number;
   const APP_VERSION = configService.get('APP_VERSION') as string;
-
-  /* const TYPEORM_DATABASE = configService.get('TYPEORM_DATABASE') as string;
-  const LOGIN_ADMIN = configService.get('LOGIN_ADMIN') as string;
-  const PASSWORD_ADMIN = configService.get('PASSWORD_ADMIN') as string;
-
-  void createAdmin({ TYPEORM_DATABASE, PASSWORD_ADMIN, LOGIN_ADMIN })
-    .then(() =>
-      Logger.log(`Admin user exists or has been created: login - admin, password - admin`),
-    )
-    .catch((e) => Logger.error(`Error create user Admin: ${e}`)); */
 
   const document = SwaggerModule.createDocument(app, options({ version: APP_VERSION }));
   SwaggerModule.setup('/doc', app, document, customOptions);
