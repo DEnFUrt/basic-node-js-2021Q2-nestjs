@@ -15,12 +15,12 @@ import {
 } from '@nestjs/common';
 import { Response } from 'express';
 import type { FastifyReply } from 'fastify';
+import { ApiBearerAuth, ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { TasksService } from './tasks.service';
 import { CreateTaskDto } from './dto/create-task.dto';
 import { UpdateTaskDto } from './dto/update-task.dto';
 import { JoiValidationPipe } from 'src/utils/Joi-validation-pipe';
 import { schemas } from 'src/utils/joi-schemas';
-import { ApiBearerAuth, ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { TaskBody, TaskResponse } from 'src/common/types-swagger';
 
 @ApiBearerAuth()
