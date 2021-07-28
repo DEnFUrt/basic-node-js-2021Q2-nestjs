@@ -26,30 +26,50 @@
 
 [Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
 
-## Installation
+# Установка приложения
 
-```bash
-$ npm install
+Для запуска проекта необходимо выполнить следующие действия
+Открыть терминал в каталоге куда будете клонировать репозиторий
 ```
+git clone https://github.com/DEnFUrt/basic-node-js-2021Q2-nestjs.git
+cd basic-node-js-2021Q2-nestjs
+git checkout task9-nestjs
+npm i
+```
+Приложение работает с локальной БД PostgresSql.
+Для запуска приложения необходимо внести соответствующие изменения в файл *.env** в следующие строки
+```
+# Set your database connection information here
+TYPEORM_CONNECTION=postgres
+TYPEORM_HOST=localhost // или ваш хост
+TYPEORM_PORT=5432 // или ваш порт БД
+TYPEORM_USERNAME=postgres  // или ваше имя пользователя БД
+TYPEORM_PASSWORD=Manager1 // или ваш пароль пользователя БД 
+TYPEORM_DATABASE=basicsdb // или ваше имя БД 
+```
+# Старт приложения
 
-## Running the app
-
-```bash
-# development
+## development
 $ npm run start
 
-# watch mode
+## watch mode
 $ npm run start:dev
 
-# production mode
+## production mode
 $ npm run start:prod
-```
 
-## Test
-
-```bash
-# unit tests
+## tест приложения
 $ npm run test:auth
+
+# Docker run
+Можно запустить приложение в докере.
+Для этого необходимо в файле **.env**  изменить строку
+```
+  TYPEORM_HOST=postgres
+```
+Далее выполнить команды в терминале
+docker-compose up
+
 
 ## Support
 
