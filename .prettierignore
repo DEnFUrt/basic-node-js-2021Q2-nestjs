@@ -1,0 +1,15 @@
+build/
+doc/
+jsdoc/
+test/
+dist/
+node_modules/
+.github
+.vscode
+/src/migration
+
+*.css
+*.html
+
+webpack.config.js
+serviceWorker.js

@@ -1,0 +1,47 @@
+version: '3.5'
+volumes: 
+    pgdata:
+
+networks: 
+    docker_net:
+        driver: bridge
+        ipam: 
+            driver: default
+            config: 
+                - subnet: ${SUBNET}
+
+services: 
+    node:
+        build: .
+        image: denfurt/docker-basics-node
+        depends_on:
+            - postgres
+        restart: always
+        working_dir: /usr/app
+        volumes:
+            - ./logs:/usr/app/logs
+            - ./src:/usr/app/src
+        ports: 
+            - ${APP_PORT}:${APP_PORT}
+        environment: 
+            PORT: ${APP_PORT}
+        networks: 
+            - docker_net
+        
+    postgres:
+        build: ./database/
+        image: denfurt/docker-basics-postgres
+        restart: always
+        volumes: 
+            - pgdata:/var/lib/postgresql/data
+        ports: 
+            - ${TYPEORM_PORT}:${TYPEORM_PORT}
+        environment: 
+            POSTGRES_USER: ${TYPEORM_USERNAME}
+            POSTGRES_PASSWORD: ${TYPEORM_PASSWORD}
+            POSTGRES_DB: ${TYPEORM_DATABASE}
+            POSTGRES_PORT: ${TYPEORM_PORT}
+        networks: 
+            - docker_net
+
+        
