@@ -1,6 +1,6 @@
 version: '3.5'
-# volumes: 
-#     pgdata:
+volumes: 
+    pgdata:
 
 networks: 
     docker_net:
@@ -22,9 +22,9 @@ services:
             - ./logs:/usr/app/logs
             - ./src:/usr/app/src
         ports: 
-            - ${PORT}:${PORT}
+            - ${APP_PORT}:${APP_PORT}
         environment: 
-            PORT: ${PORT}
+            PORT: ${APP_PORT}
         networks: 
             - docker_net
         
@@ -32,8 +32,8 @@ services:
         build: ./database/
         image: denfurt/docker-basics-postgres
         restart: always
-        # volumes: 
-        #     - pgdata:/var/lib/postgresql/data
+        volumes: 
+            - pgdata:/var/lib/postgresql/data
         ports: 
             - ${TYPEORM_PORT}:${TYPEORM_PORT}
         environment: 
