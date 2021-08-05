@@ -35,4 +35,5 @@ async function bootstrap(): Promise<void> {
     module.hot.dispose(() => app.close());
   }
 }
+
 bootstrap();

@@ -12,6 +12,7 @@ import {
   ParseUUIDPipe,
   NotFoundException,
   BadRequestException,
+  UseGuards,
 } from '@nestjs/common';
 import { Response } from 'express';
 import type { FastifyReply } from 'fastify';
@@ -22,10 +23,12 @@ import { UpdateBoardDto } from './dto/update-board.dto';
 import { JoiValidationPipe } from 'src/utils/Joi-validation-pipe';
 import { schemas } from 'src/utils/joi-schemas';
 import { BoardBody, BoardResponse } from 'src/common/types-swagger';
+import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 
 @ApiBearerAuth()
 @ApiTags('boards')
 @ApiResponse({ status: 401, description: 'Access token is missing or invalid' })
+@UseGuards(JwtAuthGuard)
 @Controller('boards')
 export class BoardsController {
   constructor(private readonly boardsService: BoardsService) {}

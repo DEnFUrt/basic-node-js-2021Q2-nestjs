@@ -22,10 +22,13 @@ import { JoiValidationPipe } from 'src/utils/Joi-validation-pipe';
 import { schemas } from 'src/utils/joi-schemas';
 import { UserBody, UserResponse } from 'src/common/types-swagger';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+import { UseGuards } from '@nestjs/common';
 
 @ApiBearerAuth()
 @ApiTags('Users')
 @ApiResponse({ status: 401, description: 'Access token is missing or invalid' })
+@UseGuards(JwtAuthGuard)
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
@@ -72,7 +75,7 @@ export class UsersController {
   @ApiBody({ description: 'The updated record', type: UserBody })
   async update(
     @Param('id', ParseUUIDPipe) id: string,
-    @Body(new JoiValidationPipe(schemas['user'])) updateUserDto: UpdateUserDto,
+    @Body(new JoiValidationPipe(schemas['userUpdated'])) updateUserDto: UpdateUserDto,
     @Res() res: Response | FastifyReply,
   ) {
     const result = await this.usersService.update(id, updateUserDto);

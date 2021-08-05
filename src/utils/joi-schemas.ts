@@ -21,6 +21,16 @@ export const schemas = {
       login: Joi.string().min(3).max(50).required(),
     }),
 
+  userUpdated: Joi.object()
+    .options({ abortEarly: false, allowUnknown: true })
+    .keys({
+      name: Joi.string().min(3).max(50),
+
+      password: Joi.string().pattern(rgxPassword),
+
+      login: Joi.string().min(3).max(50),
+    }),
+
   board: Joi.object()
     .options({ abortEarly: false, allowUnknown: true })
     .keys({

@@ -12,6 +12,7 @@ import {
   NotFoundException,
   BadRequestException,
   HttpCode,
+  UseGuards,
 } from '@nestjs/common';
 import { Response } from 'express';
 import type { FastifyReply } from 'fastify';
@@ -22,10 +23,12 @@ import { UpdateTaskDto } from './dto/update-task.dto';
 import { JoiValidationPipe } from 'src/utils/Joi-validation-pipe';
 import { schemas } from 'src/utils/joi-schemas';
 import { TaskBody, TaskResponse } from 'src/common/types-swagger';
+import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 
 @ApiBearerAuth()
 @ApiTags('tasks')
 @ApiResponse({ status: 401, description: 'Access token is missing or invalid' })
+@UseGuards(JwtAuthGuard)
 @Controller('boards/:boardId/tasks')
 export class TasksController {
   constructor(private readonly tasksService: TasksService) {}

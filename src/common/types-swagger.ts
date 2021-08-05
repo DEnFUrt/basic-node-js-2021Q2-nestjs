@@ -104,3 +104,8 @@ export class TaskResponse {
   @ApiProperty({ type: 'string' })
   columnId!: string | null;
 }
+
+export class TokenResponse {
+  @ApiProperty()
+  token!: string;
+}
