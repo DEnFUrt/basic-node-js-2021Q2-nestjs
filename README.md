@@ -26,6 +26,8 @@
 
 [Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
 
+Вариант использования аутентификации nestjs passport
+
 # Установка приложения
 
 Для запуска проекта необходимо выполнить следующие действия
